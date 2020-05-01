@@ -1012,4 +1012,145 @@ public class offerTest {
         }
         return true;
     }
+
+    /**
+     * 34 在一个字符串(0<=字符串长度<=10000，全部由字母组成)中找到第一个只出现一次的字符,并返回它的位置,
+     * 如果没有则返回 -1（需要区分大小写）.（从0开始计数）
+     * <p>
+     * hashmap是无序的，linkedhashmap是有序的
+     * hashmap 遍历
+     *
+     * @param str
+     * @return
+     */
+    public int FirstNotRepeatingChar(String str) {
+        int res = -1;
+        LinkedHashMap<Character, Integer> hashMap = new LinkedHashMap<>();
+        for (int i = 0; i < str.length(); i++) {
+            if (!hashMap.containsKey(str.charAt(i))) {
+                hashMap.put(str.charAt(i), 1);
+            } else {
+                hashMap.put(str.charAt(i), hashMap.get(str.charAt(i)) + 1);
+            }
+        }
+
+        Iterator iterator = hashMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Character, Integer> entry = (Map.Entry<Character, Integer>) iterator.next();
+            if (entry.getValue() == 1) {
+                return str.indexOf(entry.getKey());
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 35 在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组,求出这个数组中的逆序对的总数P。
+     * 并将P对1000000007取模的结果输出。 即输出P%1000000007
+     * <p>
+     * 思路：
+     * 利用归并排序，如果序列a的最小值大于序列b的最小值，a序列的全部就是可以组成逆序对
+     */
+    int count = 0;
+
+    public int InversePairs(int[] arrays) {
+        if (arrays == null || arrays.length == 1) {
+            return 0;
+        }
+        decompose(arrays, 0, arrays.length - 1);
+        return count;
+    }
+
+    private void decompose(int[] arrays, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+        int mid = (start + end) / 2;
+        decompose(arrays, start, mid);
+        decompose(arrays, mid + 1, end);
+        compose(arrays, start, mid, end);
+    }
+
+    private void compose(int[] arrays, int left, int mid, int right) {
+        int leftstart = left;
+        int leftEnd = mid;
+        int rightstart = mid + 1;
+        int rightEnd = right;
+        int[] temp = new int[right - left + 1];
+        int k = 0;
+        while (leftstart <= leftEnd && rightstart <= rightEnd) {
+            if (arrays[leftstart] < arrays[rightstart]) {
+                temp[k++] = arrays[leftstart++];
+            } else {
+                temp[k++] = arrays[rightstart++];
+                count = (count + (mid - leftstart + 1)) % 1000000007;
+            }
+        }
+        while (leftstart <= leftEnd) temp[k++] = arrays[leftstart++];
+        while (rightstart <= rightEnd) temp[k++] = arrays[rightstart++];
+
+        for (int i = 0; i < k; i++) {
+            arrays[left + i] = temp[i];
+        }
+    }
+
+    /**
+     * 36 输入两个链表，找出它们的第一个公共结点。（注意因为传入数据是链表，所以错误测试数据的提示是用其他方式显示的，保证传入数据是正确的）
+     * <p>
+     * 思路：
+     * 两个链表，不停的循环和便利，总会有相遇的时候
+     *
+     * @param pHead1
+     * @param pHead2
+     * @return
+     */
+    public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
+        if (pHead1 == null || pHead2 == null) {
+            return null;
+        }
+        ListNode p1 = pHead1;
+        ListNode p2 = pHead2;
+        while (p1 != p2) {
+            p1 = p1.next;
+            p2 = p2.next;
+            if (p1 != p2) {
+                if (p1 == null) p1 = pHead1;
+                if (p2 == null) p2 = pHead2;
+            }/*说明p1和p2没有共同到尾部*/
+        }
+        return p1;
+    }
+
+    /**
+     * 37 统计一个数字在排序数组中出现的次数。
+     * <p>
+     * 思路:二分查找找到位置，然后计数
+     * <p>
+     * 注意：
+     * 1/ binarySearch 如果数组有重复元素，是不能确定具体是那个位置，所以需要前后都遍历一遍
+     * 2/ j >= 0 && array[j] == compare，这种判断一定要注意数学
+     * 下标为0是要遍历的，但是--完以后，while的判断条件如果先判断array[j] == compare，会被崩掉
+     *
+     * @param array
+     * @param k
+     * @return
+     */
+    public int GetNumberOfK(int[] array, int k) {
+        int index = Arrays.binarySearch(array, k);
+        int count = 0;
+        if (index >= 0) {
+            int compare = array[index];
+            int i = index + 1;
+            int j = index;
+            while (i < array.length && array[i] == compare) {
+                count++;
+                i++;
+            }
+            while (j >= 0 && array[j] == compare) {
+                count++;
+                j--;
+            }
+        }
+        return count;
+    }
 }

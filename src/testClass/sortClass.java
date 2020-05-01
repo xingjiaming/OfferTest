@@ -123,7 +123,11 @@ public class sortClass {
         }
         while (leftstart <= leftEnd) temp[k++] = arrays[leftstart++];
         while (rightstart <= rightEnd) temp[k++] = arrays[rightstart++];
-
+        // 这个地方有个性能优化，不是所有的数组都需要copy
+        // 如果数组只赋值一半的区间，就好很多
+//        for (int i = 0; i < k; i++) {
+//            arrays[left + i] = temp[i];
+//        }
         for (int i = left; i <= right; i++) {
             arrays[i] = temp[i];
         }

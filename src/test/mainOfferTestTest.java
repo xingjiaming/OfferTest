@@ -204,4 +204,19 @@ public class mainOfferTestTest {
     public void GetUglyNumber_Solution() throws Exception {
         System.out.println(mOffer.GetUglyNumber_Solution(11));
     }
+
+    @Test
+    public void FirstNotRepeatingChar() throws Exception {
+        System.out.println(mOffer.FirstNotRepeatingChar("NXWtnzyoHoBhUJaPauJaAitLWNMlkKwDYbbigdMMaYfkVPhGZcrEwp"));
+    }
+
+    @Test
+    public void InversePairs() throws Exception {
+        System.out.println(mOffer.InversePairs(new int[]{1, 2, 3, 4, 5, 6, 7, 0}));
+    }
+
+    @Test
+    public void GetNumberOfK() throws Exception {
+        System.out.println(mOffer.GetNumberOfK(new int[]{3}, 3));
+    }
 } 
