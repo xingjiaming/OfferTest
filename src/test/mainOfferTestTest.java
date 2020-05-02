@@ -11,6 +11,7 @@ import utils.UtilsListNode;
 import utils.UtilsTree;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static utils.Utils.printListString;
 
@@ -154,6 +155,7 @@ public class mainOfferTestTest {
                 '#', '#', '3', '6', '#', '#', '7', '#', '#'});
         UtilsTree.show(treeNode);
         Utils.printListString(mOffer.PrintFromTopToBottom(treeNode));
+        System.out.println(mOffer.TreeDepth(treeNode));
     }
 
     @Test
@@ -218,5 +220,31 @@ public class mainOfferTestTest {
     @Test
     public void GetNumberOfK() throws Exception {
         System.out.println(mOffer.GetNumberOfK(new int[]{3}, 3));
+    }
+
+    @Test
+    public void FindNumsAppearOnce() throws Exception {
+        int[] arrays = new int[]{2, 4, 3, 6, 3, 2, 5, 5};
+        int[] num2 = new int[arrays.length - 2];
+        int[] num1 = new int[2];
+        mOffer.FindNumsAppearOnce(arrays, num1, num2);
+        System.out.println(Arrays.toString(num1));
+    }
+
+    @Test
+    public void FindNumbersWithSum() throws Exception {
+        Utils.printListString(mOffer.FindNumbersWithSum(new int[]{1, 2, 3, 4, 5}, 6));
+    }
+
+    @Test
+    public void ReverseSentence() throws Exception {
+        System.out.println(mOffer.ReverseSentence(" "));
+    }
+
+    @Test
+    public void isSymmetrical() throws Exception {
+        TreeNode treeNode = UtilsTree.createTree(new char[]{'4', '2', '1', '#', '#', '1', '#', '#', '2', '#', '#'});
+        UtilsTree.show(treeNode);
+        System.out.println(mOffer.isSymmetric(treeNode));
     }
 } 

@@ -573,6 +573,9 @@ public class offerTest {
 
     /**
      * 22 从上往下打印出二叉树的每个节点，同层节点从左至右打印。
+     * <p>
+     * 思想：
+     * 二叉树的层次遍历，这里采用队列的方式
      *
      * @param root
      * @return
@@ -585,13 +588,17 @@ public class offerTest {
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
         queue.offer(root);
         while (!queue.isEmpty()) {
-            TreeNode treeNode = queue.poll();
-            arrayList.add(treeNode.val);
-            if (treeNode.left != null) {
-                queue.offer(treeNode.left);
-            }
-            if (treeNode.right != null) {
-                queue.offer(treeNode.right);
+            int size = queue.size();// 表示一层有多少个点
+            while (size != 0) {
+                TreeNode treeNode = queue.poll();
+                arrayList.add(treeNode.val);
+                if (treeNode.left != null) {
+                    queue.offer(treeNode.left);
+                }
+                if (treeNode.right != null) {
+                    queue.offer(treeNode.right);
+                }
+                size--;// 每次遍历结束，这一行减一
             }
         }
         return arrayList;
@@ -929,9 +936,25 @@ public class offerTest {
     }
 
     /**
-     * 32 输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+     * 32 输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
+     * 例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
      * <p>
      * compareTo 是根据字典序的排序规则来的
+     * compareTo 的用法：
+     * 如果这个字符串是等参数字符串那么返回值0
+     * 如果这个字符串是按字典顺序小于字符串参数那么返回小于0的值
+     * 如果此字符串是按字典顺序大于字符串参数那么返回一个大于0的值
+     * <p>
+     * eg：
+     * String s1 = "abc"; 
+     * String s2 = "abcd"; 
+     * String s3 = "abcdfg"; 
+     * String s4 = "1bcdfg"; 
+     * String s5 = "cdfg"; 
+     * System.out.println( s1.compareTo(s2) ); // -1 (前面相等,s1长度小1) 
+     * System.out.println( s1.compareTo(s3) ); // -3 (前面相等,s1长度小3) 
+     * System.out.println( s1.compareTo(s4) ); // 48 ("a"的ASCII码是97,"1"的的ASCII码是49,所以返回48) 
+     * System.out.println( s1.compareTo(s5) ); // -2 ("a"的ASCII码是97,"c"的ASCII码是99,所以返回-2)
      *
      * @param numbers
      * @return
@@ -1152,5 +1175,358 @@ public class offerTest {
             }
         }
         return count;
+    }
+
+    /**
+     * 38 输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
+     * <p>
+     * 思路：
+     * 1、用递归，如果左孩子右孩子，取深度大的那个，遍历到根节点的时候，return就行了
+     * 2、用层次遍历的方式
+     *
+     * @param root
+     * @return
+     */
+    public int TreeDepth(TreeNode root) {
+        /**  方法 一
+         if (root == null) {
+         return 0;
+         }
+         int left = TreeDepth(root.left);
+         int right = TreeDepth(root.right);
+         return Math.max(left, right) + 1;**/
+        if (root == null) {
+            return 0;
+        }
+        int count = 0;
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();// 表示一层有多少个点
+            count++;
+            while (size != 0) {
+                TreeNode treeNode = queue.poll();
+                if (treeNode.left != null) {
+                    queue.offer(treeNode.left);
+                }
+                if (treeNode.right != null) {
+                    queue.offer(treeNode.right);
+                }
+                size--;// 每次遍历结束，这一行减一
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 39 输入一棵二叉树，判断该二叉树是否是平衡二叉树。
+     * <p>
+     * 思路：
+     * 1、如果是null返回true
+     * 2、平衡二叉树的性质，如果是平衡，那左右都是平衡的
+     * 3、如果左右节点的深度大于1，返回false
+     * 4、如果左右节点的深度小于1，说明当前节点平衡，继续向下递归
+     *
+     * @param root
+     * @return
+     */
+    public boolean IsBalanced_Solution(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        if (Math.abs(IsBalancedDepth(root.left) - IsBalancedDepth(root.right)) > 1) {
+            return false;
+        } else {
+            return IsBalanced_Solution(root.left) && IsBalanced_Solution(root.right);
+        }
+    }
+
+    int IsBalancedDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = IsBalancedDepth(root.left);
+        int right = IsBalancedDepth(root.right);
+        int count = Math.max(left, right) + 1;
+        return count;
+    }
+
+    /**
+     * 40 一个整型数组里除了两个数字之外，其他的数字都出现了两次。
+     * 请写程序找出这两个只出现一次的数字。
+     * 思路：
+     * 方法  1 ：用hash计数的方法
+     *
+     * @param array
+     * @param num1
+     * @param num2
+     */
+    public void FindNumsAppearOnce(int[] array, int num1[], int num2[]) {
+        Map<Integer, Integer> map = new LinkedHashMap<>();
+        for (int i = 0; i < array.length; i++) {
+            if (!map.containsKey(array[i])) {
+                map.put(array[i], 1);
+            } else {
+                map.put(array[i], 1 + map.get(array[i]));
+            }
+        }
+
+        Iterator iterator = map.entrySet().iterator();
+        int i = 0;
+        int j = 0;
+        int count = 0;
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Integer> entry = (Map.Entry<Integer, Integer>) iterator.next();
+            if (entry.getValue() == 1 && count == 0) {
+                num1[0] = entry.getKey();
+                count++;
+            } else if (entry.getValue() == 1 && count == 1) {
+                num2[0] = entry.getKey();
+                count++;
+            }
+        }
+    }
+
+    /**
+     * 41 输出所有和为S的连续正数序列。序列内按照从小至大的顺序，序列间按照开始数字从小到大的顺序
+     * <p>
+     * 思路：
+     * 暴力的方法
+     *
+     * @param sum
+     * @return
+     */
+    public ArrayList<ArrayList<Integer>> FindContinuousSequence(int sum) {
+        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+        for (int i = 1; i < sum; i++) {
+            int j = i;
+            int count = 0;
+            ArrayList<Integer> temp = new ArrayList<>();
+            while (count < sum) {
+                temp.add(j);
+                count += j;
+                if (count == sum) {
+                    res.add(temp);
+                    break;
+                }
+                j++;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 42 输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得他们的和正好是S，
+     * 如果有多对数字的和等于S，输出两个数的乘积最小的。
+     * <p>
+     * 思想：
+     * 左右游标来控制，参考快速排序，关键词：两个数组，递增排序
+     *
+     * @param array
+     * @param sum
+     * @return
+     */
+    public ArrayList<Integer> FindNumbersWithSum(int[] array, int sum) {
+        ArrayList<Integer> out = new ArrayList<>();
+        if (array == null || array.length == 0) {
+            return out;
+        }
+        int len = array.length;
+        int i = 0;
+        int j = len - 1;
+        int compare = array[array.length - 1] * array[array.length - 1];
+        int[] res = new int[2];
+        while (i < j) {
+            int temp = array[i] + array[j];
+            if (temp > sum && i < j) {
+                j--;
+            } else if (temp < sum && i < j) {
+                i++;
+            } else {
+                if (array[i] * array[j] < compare) {
+                    compare = array[i] * array[j];
+                    res[0] = array[i];
+                    res[1] = array[j];
+                }
+                i++;
+                j--;
+            }
+        }
+        if (res[0] != 0 && res[1] != 0) {
+            out.add(res[0]);
+            out.add(res[1]);
+        }
+        return out;
+    }
+
+    /**
+     * 43 汇编语言中有一种移位指令叫做循环左移（ROL），现在有个简单的任务，就是用字符串模拟这个指令的运算结果。
+     * 对于一个给定的字符序列S，请你把其循环左移K位后的序列输出。
+     * 例如，字符序列S=”abcXYZdef”,要求输出循环左移3位后的结果，即“XYZdefabc”。
+     * 是不是很简单？OK，搞定它！
+     * <p>
+     * 思想：
+     * 用string的接口 substring
+     *
+     * @param str
+     * @param n
+     * @return
+     */
+    public String LeftRotateString(String str, int n) {
+        if (str == null || str.length() == 0) {
+            return "";
+        }
+        if (str.length() <= n) {
+            return str;
+        }
+        int len = str.length();
+        return str.substring(n, len) + str.substring(0, n);
+    }
+
+    /**
+     * 44 牛客最近来了一个新员工Fish，每天早晨总是会拿着一本英文杂志，写些句子在本子上。同事Cat对Fish写的内容颇感兴趣，
+     * 有一天他向Fish借来翻看，但却读不懂它的意思。例如，“student. a am I”。
+     * 后来才意识到，这家伙原来把句子单词的顺序翻转了，正确的句子应该是“I am a student.”。
+     * Cat对一一的翻转这些单词顺序可不在行，你能帮助他么？
+     * <p>
+     * 思路：
+     * trim是去掉首位空格的意思
+     * split 分割字符串
+     * 基于空格分割字符串，利用stack拼接字符串
+     *
+     * @param str
+     * @return
+     */
+    public String ReverseSentence(String str) {
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        String[] temp = str.split(" ");
+        if (temp.length == 0) {
+            return str;
+        }
+        Stack<String> stack = new Stack<>();
+        for (String i : temp) {
+            stack.push(i);
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        while (!stack.isEmpty()) {
+            stringBuilder.append(stack.pop()).append(" ");
+        }
+        return stringBuilder.toString().trim();
+    }
+
+    /**
+     * 50 在一个长度为n的数组里的所有数字都在0到n-1的范围内。
+     * 数组中某些数字是重复的，但不知道有几个数字是重复的。
+     * 也不知道每个数字重复几次。请找出数组中任意一个重复的数字。
+     * 例如，如果输入长度为7的数组{2,3,1,0,2,5,3}，那么对应的输出是第一个重复的数字2。
+     * <p>
+     * 思想：
+     * hash
+     *
+     * @param numbers
+     * @param length
+     * @param duplication
+     * @return
+     */
+    public boolean duplicate(int numbers[], int length, int[] duplication) {
+        Map<Integer, Integer> map = new LinkedHashMap<>();
+        if (numbers == null || numbers.length <= 1) {
+            return false;
+        }
+        for (int i = 0; i < numbers.length; i++) {
+            if (!map.containsKey(numbers[i])) {
+                map.put(numbers[i], 1);
+            } else {
+                duplication[0] = numbers[i];
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 58 请实现一个函数，用来判断一颗二叉树是不是对称的。
+     * 注意，如果一个二叉树同此二叉树的镜像是同样的，定义其为对称的。
+     */
+    public static boolean isSymmetric(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return isSymmetrictmp(root.left, root.right);
+    }
+
+    /**
+     * isSymmetrictmp 判读左右节点是否是相等的
+     * 思想：
+     * 左孩子等右孩子，右孩子等于左孩子
+     * 1
+     * / \
+     * 2   2
+     * / \ / \
+     * 3  4 4  3
+     *
+     * @param left
+     * @param right
+     * @return
+     */
+    private static boolean isSymmetrictmp(TreeNode left, TreeNode right) {
+        if ((left == null) && (right == null)) {
+            return true;
+        }
+
+        if ((left == null) || (right == null)) {
+            return false;
+        }
+
+        if (left.val != right.val) {
+            return false;
+        }
+        return isSymmetrictmp(left.left, right.right) && isSymmetrictmp(left.right, right.left);
+    }
+
+    /**
+     * 59 请实现一个函数按照之字形打印二叉树，即第一行按照从左到右的顺序打印，
+     * 第二层按照从右至左的顺序打印，
+     * 第三行按照从左到右的顺序打印，其他行以此类推。
+     * <p>
+     * 思路：
+     * 层次遍历，每次修改ArrayList的插入顺序
+     *
+     * @param pRoot
+     * @return
+     */
+    public ArrayList<ArrayList<Integer>> Print(TreeNode pRoot) {
+        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+        if (pRoot == null) {
+            return res;
+        }
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(pRoot);
+        boolean isLeft = true;
+        while (!queue.isEmpty()) {
+            int size = queue.size();// 表示一层有多少个点
+            ArrayList<Integer> tmp = new ArrayList<>();
+            while (size != 0) {
+                TreeNode treeNode = queue.poll();
+                if (isLeft) {
+                    tmp.add(treeNode.val);
+                } else {
+                    //表示插入的点
+                    tmp.add(0, treeNode.val);
+                }
+                if (treeNode.left != null) {
+                    queue.offer(treeNode.left);
+                }
+                if (treeNode.right != null) {
+                    queue.offer(treeNode.right);
+                }
+                size--;// 每次遍历结束，这一行减一
+            }
+            isLeft = !isLeft;
+            res.add(tmp);
+        }
+        return res;
     }
 }
