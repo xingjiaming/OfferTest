@@ -1,4 +1,4 @@
-package testClass;
+package algorithm;
 
 import Bean.ListNode;
 import Bean.RandomListNode;

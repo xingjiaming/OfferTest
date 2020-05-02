@@ -1,9 +1,7 @@
 package test;
 
 import org.junit.Test;
-import org.junit.Before;
-import org.junit.After;
-import testClass.sortClass;
+import algorithm.sortClass;
 
 import java.util.Arrays;
 

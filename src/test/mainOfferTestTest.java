@@ -5,7 +5,7 @@ import Bean.TreeNode;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
-import testClass.offerTest;
+import algorithm.offerTest;
 import utils.Utils;
 import utils.UtilsListNode;
 import utils.UtilsTree;

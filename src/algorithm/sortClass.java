@@ -1,6 +1,4 @@
-package testClass;
-
-import java.util.ArrayList;
+package algorithm;
 
 public class sortClass {
     public sortClass() {
