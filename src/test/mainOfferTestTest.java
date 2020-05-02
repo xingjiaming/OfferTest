@@ -247,4 +247,15 @@ public class mainOfferTestTest {
         UtilsTree.show(treeNode);
         System.out.println(mOffer.isSymmetric(treeNode));
     }
+
+    @Test
+    public void LastRemaining_Solution() throws Exception {
+        System.out.println(mOffer.LastRemaining_Solution(5, 3));
+    }
+
+    @Test
+    public void deleteDuplication() throws Exception {
+        UtilsListNode.printList(mOffer.deleteDuplication(UtilsListNode.createList(new int[]{1,1, 2, 2, 3, 3, 3, 4, 4, 4, 5}
+                , UtilsListNode.CREAT_LIST_END)));
+    }
 } 

@@ -1417,6 +1417,82 @@ public class offerTest {
     }
 
     /**
+     * 45 LL今天心情特别好,因为他去买了一副扑克牌,发现里面居然有2个大王,2个小王(一副牌原本是54张^_^)...他随机从中抽出了5张牌,
+     * 想测测自己的手气,看看能不能抽到顺子,如果抽到的话,他决定去买体育彩票,嘿嘿！！“红心A,黑桃3,小王,大王,方片5”,“Oh My God!”
+     * 不是顺子.....LL不高兴了,他想了想,决定大\小 王可以看成任何数字,并且A看作1,J为11,Q为12,K为13。上面的5张牌就可以变成“1,2,3,4,5”
+     * (大小王分别看作2和4),“So Lucky!”。LL决定去买体育彩票啦。 现在,要求你使用这幅牌模拟上面的过程,然后告诉我们LL的运气如何，
+     * 如果牌能组成顺子就输出true，否则就输出false。为了方便起见,你可以认为大小王是0。
+     * <p>
+     * 思想：
+     * 1、大王小王代表 0
+     * 2、如果可以凑成的话，最大值和最小值的差一定要小于5
+     * 3、手里的有效牌一定是小于等于5，这里可有用set做去重处理
+     */
+    public boolean isContinuous(int[] numbers) {
+        if (numbers == null || numbers.length < 5) {
+            return false;
+        }
+        //TreeSet插入是有序的
+        TreeSet<Integer> set = new TreeSet<>();
+        int num = 0;
+        for (int i = 0; i < numbers.length; i++) {
+            if (numbers[i] == 0) {
+                num++;//计大王小王的个数
+            } else {
+                set.add(numbers[i]);
+            }
+        }
+        //1、不能有重复的牌
+        //2、最大值和最小值的差值要小于5
+        if ((set.last() - set.first()) < 5 && (set.size() + num) == 5) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 46 每年六一儿童节,牛客都会准备一些小礼物去看望孤儿院的小朋友,今年亦是如此。
+     * HF作为牛客的资深元老,自然也准备了一些小游戏。其中,有个游戏是这样的:首先,让小朋友们围成一个大圈。然后,他随机指定一个数m,让编号为0的小朋友开始报数。
+     * 每次喊到m-1的那个小朋友要出列唱首歌,然后可以在礼品箱中任意的挑选礼物,并且不再回到圈中,
+     * 从他的下一个小朋友开始,继续0...m-1报数....这样下去....直到剩下最后一个小朋友,可以不用表演,并且拿到牛客名贵的“名侦探柯南”典藏版(名额有限哦!!^_^)。
+     * 请你试着想下,哪个小朋友会得到这份礼品呢？(注：小朋友的编号是从0到n-1)
+     * 如果没有小朋友，请返回-1
+     * <p>
+     * 思想：
+     * 方法1：建立一个循环链表，然后反复的遍历，每次遍历到m-1次的时候，去除节点，然后遍历到只有一个元素的时候，返回就行了
+     *
+     * @param n
+     * @param m
+     * @return
+     */
+    public int LastRemaining_Solution(int n, int m) {
+        if (n <= 0 || m <= 0) {
+            return -1;
+        }
+        ListNode head = new ListNode(0);
+        ListNode node = head;
+
+        for (int i = 1; i < n; i++) {
+            node.next = new ListNode(i);
+            node = node.next;
+        }
+
+        node.next = head;
+        node = head;
+
+        while (node.next != node) {
+            int k = 1;
+            while (k < m - 1) {
+                k++;
+                node = node.next;
+            }
+            node.next = node.next.next;
+            node = node.next;
+        }
+        return node.val;
+    }
+
+    /**
      * 50 在一个长度为n的数组里的所有数字都在0到n-1的范围内。
      * 数组中某些数字是重复的，但不知道有几个数字是重复的。
      * 也不知道每个数字重复几次。请找出数组中任意一个重复的数字。
@@ -1444,6 +1520,45 @@ public class offerTest {
             }
         }
         return false;
+    }
+
+    /**
+     * 56 在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。
+     * 例如，链表1->2->3->3->4->4->5 处理后为 1->2->5
+     * <p>
+     * 思路：
+     * 方法1：用hash的方法计数，新建链表返回
+     * 方法2：通过cur和next两个指针遍历，但是头结点需要单独处理，容易出空指针
+     *
+     * @param pHead
+     * @return
+     */
+    public ListNode deleteDuplication(ListNode pHead) {
+        if (pHead == null) {
+            return null;
+        }
+        ListNode res = new ListNode(0);
+        ListNode node = res;
+        Map<Integer, Integer> map = new LinkedHashMap<>();
+        while (pHead != null) {
+            if (!map.containsKey(pHead.val)) {
+                map.put(pHead.val, 1);
+            } else {
+                map.put(pHead.val, map.get(pHead.val) + 1);
+            }
+            pHead = pHead.next;
+        }
+
+        Iterator iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Integer> tmp = (Map.Entry<Integer, Integer>) iterator.next();
+            if (tmp.getValue() == 1) {
+                node.next = new ListNode(tmp.getKey());
+                node = node.next;
+            }
+        }
+        node.next = null;
+        return res.next;
     }
 
     /**
@@ -1525,6 +1640,41 @@ public class offerTest {
                 size--;// 每次遍历结束，这一行减一
             }
             isLeft = !isLeft;
+            res.add(tmp);
+        }
+        return res;
+    }
+
+    /**
+     * 60 从上到下按层打印二叉树，同一层结点从左至右输出。每一层输出一行。
+     * <p>
+     * 思想：
+     * 层次遍历
+     *
+     * @param pRoot
+     * @return
+     */
+    public ArrayList<ArrayList<Integer>> Print_1(TreeNode pRoot) {
+        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+        if (pRoot == null) {
+            return res;
+        }
+        Queue<TreeNode> queue = new LinkedList();
+        queue.offer(pRoot);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            ArrayList<Integer> tmp = new ArrayList<>();
+            while (size > 0) {
+                TreeNode treeNode = queue.poll();
+                tmp.add(treeNode.val);
+                if (treeNode.left != null) {
+                    queue.offer(treeNode.left);
+                }
+                if (treeNode.right != null) {
+                    queue.offer(treeNode.right);
+                }
+                size--;
+            }
             res.add(tmp);
         }
         return res;
