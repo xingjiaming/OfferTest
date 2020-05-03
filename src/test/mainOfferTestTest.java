@@ -255,7 +255,12 @@ public class mainOfferTestTest {
 
     @Test
     public void deleteDuplication() throws Exception {
-        UtilsListNode.printList(mOffer.deleteDuplication(UtilsListNode.createList(new int[]{1,1, 2, 2, 3, 3, 3, 4, 4, 4, 5}
+        UtilsListNode.printList(mOffer.deleteDuplication(UtilsListNode.createList(new int[]{1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5}
                 , UtilsListNode.CREAT_LIST_END)));
+    }
+
+    @Test
+    public void Add() throws Exception {
+        System.out.println(mOffer.Add(5, 3));
     }
 } 
